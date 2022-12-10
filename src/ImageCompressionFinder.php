@@ -25,7 +25,7 @@ class ImageCompressionFinder
         return new self();
     }
 
-    public function run(string $imagePath, float $maxDifference, ?string $convertEncodingTo = null): int
+    public function run(string $imagePath, ?string $convertEncodingTo = null): int
     {
         $previousQuality = $this->startingQuality;
         $newQuality = intval($this->startingQuality / 2);
@@ -37,7 +37,7 @@ class ImageCompressionFinder
 
             $difference = $this->getDssim($imagePath, $compressedJpegImagePath);
 
-            if ($difference > $maxDifference) {
+            if ($difference > $this->maxDifference) {
                 $nextQuality = round($newQuality + (($previousQuality - $newQuality) / 2));
             } else {
                 $nextQuality = round($newQuality / 2);
