@@ -35,11 +35,6 @@ class ImageCompressionFinder
         while ($upperBound - $lowerBound > 1) {
             $compressedImagePath = $this->generateImage($imagePath, $quality);
 
-            if (in_array(pathinfo($imagePath, PATHINFO_EXTENSION), ['jpeg', 'jpg'], true) === false) {
-                // DSSIM can only compare JPEGs
-                $compressedImagePath = $this->generateImage($compressedImagePath, 100, 'jpg');
-            }
-
             $difference = $this->getDssim($imagePath, $compressedImagePath);
 
             if ($difference > $this->maxDifference) {
@@ -58,9 +53,8 @@ class ImageCompressionFinder
 
     protected function generateImage(string $path, int $quality, ?string $encoding = null): string
     {
-        [$filename, $extension] = explode('.', basename($path));
-        $encoding ??= $extension;
-        $cachePath = $this->cacheDirectory->path($filename . '@' . $quality . '.' . $encoding);
+        $encoding ??= pathinfo($path, PATHINFO_EXTENSION);
+        $cachePath = $this->cacheDirectory->path(basename($path) . '@' . $quality . '.' . $encoding);
 
         if (file_exists($cachePath) === false) {
             (new ImageManager(['driver' => $this->driver]))
@@ -73,6 +67,15 @@ class ImageCompressionFinder
 
     protected function getDssim(string $imagePathSource, string $imagePathTest): float
     {
+        // DSSIM can only compare JPEGs
+        if (in_array(pathinfo($imagePathSource, PATHINFO_EXTENSION), ['jpeg', 'jpg'], true) === false) {
+            $imagePathSource = $this->generateImage($imagePathSource, 100, 'jpeg');
+        }
+
+        if (in_array(pathinfo($imagePathTest, PATHINFO_EXTENSION), ['jpeg', 'jpg'], true) === false) {
+            $imagePathTest = $this->generateImage($imagePathTest, 100, 'jpeg');
+        }
+
         $executable = (new ExecutableFinder())->find('dssim');
 
         if ($executable === null) {
