@@ -27,12 +27,13 @@ class ImageCompressionFinder
 
     public function run(string $imagePath): int
     {
-        $previousQuality = $this->startingQuality;
-        $newQuality = intval($this->startingQuality / 2);
+        $quality = $this->startingQuality;
 
-        while ($newQuality !== $previousQuality) {
-            var_dump($newQuality, $previousQuality);
-            $compressedImagePath = $this->generateImage($imagePath, $newQuality);
+        $upperBound = 100;
+        $lowerBound = 0;
+
+        while ($upperBound - $lowerBound > 1) {
+            $compressedImagePath = $this->generateImage($imagePath, $quality);
 
             if (in_array(pathinfo($imagePath, PATHINFO_EXTENSION), ['jpeg', 'jpg'], true) === false) {
                 // DSSIM can only compare JPEGs
@@ -42,16 +43,17 @@ class ImageCompressionFinder
             $difference = $this->getDssim($imagePath, $compressedImagePath);
 
             if ($difference > $this->maxDifference) {
-                $nextQuality = round($newQuality + (($previousQuality - $newQuality) / 2));
+                $lowerBound = $quality;
             } else {
-                $nextQuality = round($newQuality / 2);
+                $upperBound = $quality;
             }
 
-            $previousQuality = $newQuality;
-            $newQuality = intval($nextQuality);
+            $nextQuality = $lowerBound + (($upperBound - $lowerBound) / 2);
+
+            $quality = intval(round($nextQuality));
         }
 
-        return $newQuality;
+        return $quality;
     }
 
     protected function generateImage(string $path, int $quality, ?string $encoding = null): string
