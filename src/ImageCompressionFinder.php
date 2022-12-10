@@ -25,17 +25,21 @@ class ImageCompressionFinder
         return new self();
     }
 
-    public function run(string $imagePath, ?string $convertEncodingTo = null): int
+    public function run(string $imagePath): int
     {
         $previousQuality = $this->startingQuality;
         $newQuality = intval($this->startingQuality / 2);
 
         while ($newQuality !== $previousQuality) {
             var_dump($newQuality, $previousQuality);
-            $compressedImagePath = $this->generateImage($imagePath, $newQuality, $convertEncodingTo);
-            $compressedJpegImagePath = $this->generateImage($compressedImagePath, 100, 'jpg');
+            $compressedImagePath = $this->generateImage($imagePath, $newQuality);
 
-            $difference = $this->getDssim($imagePath, $compressedJpegImagePath);
+            if (in_array(pathinfo($imagePath, PATHINFO_EXTENSION), ['jpeg', 'jpg'], true) === false) {
+                // DSSIM can only compare JPEGs
+                $compressedImagePath = $this->generateImage($compressedImagePath, 100, 'jpg');
+            }
+
+            $difference = $this->getDssim($imagePath, $compressedImagePath);
 
             if ($difference > $this->maxDifference) {
                 $nextQuality = round($newQuality + (($previousQuality - $newQuality) / 2));
