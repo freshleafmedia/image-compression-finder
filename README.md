@@ -27,6 +27,10 @@ To install the latest, at time of writing, on Ubuntu the following one-liner can
 curl -sSL https://github.com/kornelski/dssim/releases/download/3.2.3/dssim_3.2.3_amd64.deb > /tmp/dssim.deb && apt install /tmp/dssim.deb
 ```
 
+### Imagick/GD
+
+Either of Imagick or GD extensions are required.
+
 
 
 ## Usage
@@ -57,7 +61,7 @@ The `ImageCompressionFinder` constructor takes a number of options:
 
 ```php
 new ImageCompressionFinder(
-    driver: 'imagick', // The driver to use to compress images
+    driver: 'imagick', // The driver to use to compress images. Eg imagick or gd
     maxDifference: 0.001, // The highest acceptable visual change. 0-∞ where 0 is no change at all
     startingQuality: 60, // Where to start the search
 );
