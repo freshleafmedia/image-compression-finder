@@ -8,7 +8,7 @@ Automatic detection of maximum compression without visually changing the image.
 This is a library which attempts to determine the maximum amount of compression which can be applied 
 to an image while not introducing any visible changes.
 
-The output is an integer between 0 and 100. It can be passed directly to the quality 
+The output is an integer between 0 and 100.
 
 
 ## Installation
