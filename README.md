@@ -14,7 +14,7 @@ The output is an integer between 0 and 100.
 ## Installation
 
 ```
-composer require freshleafmedia/images-compression-finder
+composer require freshleafmedia/image-compression-finder
 ```
 
 ### DSSIM
