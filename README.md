@@ -57,14 +57,14 @@ The algorithm uses a binary search to repeatedly compress and test an image unti
 
 ## Options
 
-The `ImageCompressionFinder` constructor takes a number of options:
+There are a couple of configuration options:
 
 ```php
-new ImageCompressionFinder(
-    driver: 'imagick', // The driver to use to compress images. Eg imagick or gd
-    maxDifference: 0.001, // The highest acceptable visual change. 0-∞ where 0 is no change at all
-    startingQuality: 60, // Where to start the search
-);
+$quality = ImageCompressionFinder::make()
+    ->maxDifference(0.001) // The highest acceptable visual change. 0-∞ where 0 is no change at all
+    ->startingQuality(60) // Where to start the search
+    ->driver('imagick') // The driver to use to compress images. Eg imagick or gd
+    ->run();
 ```
 
 

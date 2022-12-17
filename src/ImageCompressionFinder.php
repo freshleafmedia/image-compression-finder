@@ -25,6 +25,27 @@ class ImageCompressionFinder
         return new self();
     }
 
+    public function driver(string $driver): self
+    {
+        $this->driver = $driver;
+
+        return $this;
+    }
+
+    public function maxDifference(float $difference): self
+    {
+        $this->maxDifference = $difference;
+
+        return $this;
+    }
+
+    public function startingQuality(int $quality): self
+    {
+        $this->startingQuality = $quality;
+
+        return $this;
+    }
+
     public function run(string $imagePath): int
     {
         $quality = $this->startingQuality;
