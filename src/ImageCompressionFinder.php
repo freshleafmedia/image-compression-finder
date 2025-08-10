@@ -3,7 +3,9 @@
 namespace Freshleafmedia\ImageCompressionFinder;
 
 use Freshleafmedia\ImageCompressionFinder\Exceptions\DssimNotFoundException;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\DriverInterface;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -13,7 +15,7 @@ class ImageCompressionFinder
     protected TemporaryDirectory $cacheDirectory;
 
     public function __construct(
-        protected string $driver = 'imagick',
+        protected DriverInterface $driver = new ImagickDriver(),
         protected float $maxDifference = 0.001,
         protected int $startingQuality = 60,
     ) {
@@ -25,7 +27,7 @@ class ImageCompressionFinder
         return new self();
     }
 
-    public function driver(string $driver): self
+    public function driver(DriverInterface $driver): self
     {
         $this->driver = $driver;
 
@@ -78,8 +80,8 @@ class ImageCompressionFinder
         $cachePath = $this->cacheDirectory->path(basename($path) . '@' . $quality . '.' . $encoding);
 
         if (file_exists($cachePath) === false) {
-            (new ImageManager(['driver' => $this->driver]))
-                ->make($path)
+            (new ImageManager($this->driver))
+                ->read($path)
                 ->save($cachePath, $quality, $encoding);
         }
 
