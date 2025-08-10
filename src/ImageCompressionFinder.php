@@ -82,7 +82,7 @@ class ImageCompressionFinder
         if (file_exists($cachePath) === false) {
             (new ImageManager($this->driver))
                 ->read($path)
-                ->save($cachePath, $quality, $encoding);
+                ->save($cachePath, quality: $quality);
         }
 
         return $cachePath;
